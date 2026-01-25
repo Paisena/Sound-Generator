@@ -78,7 +78,7 @@ def sine_tone(
 
 frequency = 440.0
 duration = 1.0
-amplitude = 0.01
+amplitude = 1
 root = tk.Tk()
 
 root.title("Sound Generator")
