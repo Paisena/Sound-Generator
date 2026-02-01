@@ -1,0 +1,72 @@
+('C:\\SchoolStuff\\UCSC\\UCSC Year 3 WINTER\\CMPM '
+ '147\\Sound-Generator\\V2\\build\\Sound Generator\\Sound Generator.pkg',
+ {'BINARY': True,
+  'DATA': True,
+  'EXECUTABLE': True,
+  'EXTENSION': True,
+  'PYMODULE': True,
+  'PYSOURCE': True,
+  'PYZ': False,
+  'SPLASH': True,
+  'SYMLINK': False},
+ [('pyi-contents-directory _internal', '', 'OPTION'),
+  ('PYZ-00.pyz',
+   'C:\\SchoolStuff\\UCSC\\UCSC Year 3 WINTER\\CMPM '
+   '147\\Sound-Generator\\V2\\build\\Sound Generator\\PYZ-00.pyz',
+   'PYZ'),
+  ('struct',
+   'C:\\SchoolStuff\\UCSC\\UCSC Year 3 WINTER\\CMPM '
+   '147\\Sound-Generator\\V2\\build\\Sound Generator\\localpycs\\struct.pyc',
+   'PYMODULE'),
+  ('pyimod01_archive',
+   'C:\\SchoolStuff\\UCSC\\UCSC Year 3 WINTER\\CMPM '
+   '147\\Sound-Generator\\V2\\build\\Sound '
+   'Generator\\localpycs\\pyimod01_archive.pyc',
+   'PYMODULE'),
+  ('pyimod02_importers',
+   'C:\\SchoolStuff\\UCSC\\UCSC Year 3 WINTER\\CMPM '
+   '147\\Sound-Generator\\V2\\build\\Sound '
+   'Generator\\localpycs\\pyimod02_importers.pyc',
+   'PYMODULE'),
+  ('pyimod03_ctypes',
+   'C:\\SchoolStuff\\UCSC\\UCSC Year 3 WINTER\\CMPM '
+   '147\\Sound-Generator\\V2\\build\\Sound '
+   'Generator\\localpycs\\pyimod03_ctypes.pyc',
+   'PYMODULE'),
+  ('pyimod04_pywin32',
+   'C:\\SchoolStuff\\UCSC\\UCSC Year 3 WINTER\\CMPM '
+   '147\\Sound-Generator\\V2\\build\\Sound '
+   'Generator\\localpycs\\pyimod04_pywin32.pyc',
+   'PYMODULE'),
+  ('pyiboot01_bootstrap',
+   'C:\\SchoolStuff\\UCSC\\UCSC Year 3 WINTER\\CMPM '
+   '147\\Sound-Generator\\.venv\\Lib\\site-packages\\PyInstaller\\loader\\pyiboot01_bootstrap.py',
+   'PYSOURCE'),
+  ('pyi_rth_inspect',
+   'C:\\SchoolStuff\\UCSC\\UCSC Year 3 WINTER\\CMPM '
+   '147\\Sound-Generator\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_inspect.py',
+   'PYSOURCE'),
+  ('pyi_rth__tkinter',
+   'C:\\SchoolStuff\\UCSC\\UCSC Year 3 WINTER\\CMPM '
+   '147\\Sound-Generator\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth__tkinter.py',
+   'PYSOURCE'),
+  ('pyi_rth_pkgutil',
+   'C:\\SchoolStuff\\UCSC\\UCSC Year 3 WINTER\\CMPM '
+   '147\\Sound-Generator\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_pkgutil.py',
+   'PYSOURCE'),
+  ('pyi_rth_multiprocessing',
+   'C:\\SchoolStuff\\UCSC\\UCSC Year 3 WINTER\\CMPM '
+   '147\\Sound-Generator\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_multiprocessing.py',
+   'PYSOURCE'),
+  ('Sound Generator',
+   'C:\\SchoolStuff\\UCSC\\UCSC Year 3 WINTER\\CMPM '
+   '147\\Sound-Generator\\V2\\Sound Generator.py',
+   'PYSOURCE')],
+ 'python314.dll',
+ True,
+ False,
+ False,
+ [],
+ None,
+ None,
+ None)
