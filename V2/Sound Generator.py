@@ -50,6 +50,11 @@ def getSoundValues():
             release = 0.2
         if duration < (attack + decay + release):
             duration = attack + decay + release + 0.1
+        textSlide = entrySlide.get()
+        if checkIfNum(textSlide):
+            slide = float(textSlide)
+        else:
+            slide = 1
         
     sines = [sine_tone(frequency = 200 * i, amplitude=0.3 /i) for i in range(1, 31, 2)]
     sinesBeating = [sine_tone(200, 2, 0.01), sine_tone(205, 2, 0.01)]
@@ -104,13 +109,18 @@ def on_click():
             release = 0.2
         if duration < (attack + decay + release):
             duration = attack + decay + release + 0.1
+    textSlide = entrySlide.get()
+    if checkIfNum(textSlide):
+        slideVal = float(textSlide)
+    else:
+        slideVal = 1
         
     sines = [sine_tone(frequency = 200 * i, amplitude=0.3 /i) for i in range(1, 31, 2)]
     sinesBeating = [sine_tone(200, 2, 0.01), sine_tone(205, 2, 0.01)]
 
-    sine1 = sine_tone(frequency, duration, amplitude/1000, sample_rate=sampleRate)
-    sine2 = sine_tone(frequency*2, duration, amplitude/2000, sample_rate=sampleRate)
-    sine3 = sine_tone(frequency*4, duration, amplitude/3000, sample_rate=sampleRate)
+    sine1 = sine_tone(frequency, duration, amplitude/1000, sample_rate=sampleRate, slide=slideVal)
+    sine2 = sine_tone(frequency*2, duration, amplitude/2000, sample_rate=sampleRate, slide=slideVal)
+    sine3 = sine_tone(frequency*4, duration, amplitude/3000, sample_rate=sampleRate, slide=slideVal)
 
     mysound = sine1 if chord_enabled.get() == 0 else sum([sine1, sine2, sine3])
     if(ADSR_enabled.get()==1):
@@ -141,13 +151,14 @@ def sine_tone(
         frequency: float =222.0,
         duration: float =5.0,
         amplitude: float =0.01,
-        sample_rate: int =8000
+        sample_rate: int =8000,
+        slide: float = 1
     ) -> np.ndarray:
     n_samples = int(duration * sample_rate)
 
     time_points = np.linspace(0, duration, n_samples, False)
-
-    sine = np.sin(2 * np.pi * frequency * time_points)
+    print(slide)
+    sine = np.sin(2 * np.pi * frequency * pow(time_points,slide))
 
     sine *= amplitude
 
@@ -158,7 +169,7 @@ def sine_tone(
 
 def apply_envelope(sound: np.array,
                     adsr:list,
-                    smaple_rate: int=8000) ->np.array:
+                    smaple_rate: int=44100) ->np.array:
     sound = sound.copy()
 
     attack_samples = int(adsr[0] * smaple_rate)
@@ -174,6 +185,11 @@ def apply_envelope(sound: np.array,
 
     sound[attack_samples + decay_samples + sustain_samples:] *= np.linspace(adsr[2], 0, release_samples)
     return sound
+
+def apply_slide(sound: np.array,
+                slide_amount: float,
+                sample_rate: int = 44100) -> np.array:
+    return
 
 #endregion
 def checkIfNum(str):
@@ -242,6 +258,10 @@ def updateRelease(var, index, mode):
     if checkIfNum(entryRelease.get()):
         releaseSlider.set(float(entryRelease.get()))
 
+def updateSlide(var, index, mode):
+    if checkIfNum(entrySlide.get()):
+        slideSlider.set(float(entrySlide.get()))
+
 def updateSliders(var, index, mode):
     updateFrequency("", "", "")
     updateDuration("", "", "")
@@ -250,6 +270,7 @@ def updateSliders(var, index, mode):
     updateDecay("", "", "")
     updateSustain("", "", "")
     updateRelease("", "", "")
+    updateSlide("", "", "")
     
 
 def updateLabels(var):
@@ -273,6 +294,9 @@ def updateLabels(var):
 
     entryRelease.delete(0, tk.END)
     entryRelease.insert(0, (str(releaseSlider.get())))
+    
+    entrySlide.delete(0, tk.END)
+    entrySlide.insert(0, (str(slideSlider.get())))
     updateSliders("", "", "")
 
 def exportSound():
@@ -292,13 +316,14 @@ def exportSound():
 #region main
 
 frequency = 440.0
-duration = 1.0
+duration = 1.5
 amplitude = 5
-attack = 1
+attack = 0.4
 decay = 0.1
 sustain = 0.5
 release = 0.2
 sampleRate = 44100
+slide = 1
 root = tk.Tk()
 ADSR_enabled = tk.IntVar()
 chord_enabled = tk.IntVar()
@@ -310,7 +335,7 @@ root.title("Sound Generator")
 frame = tk.Frame(root)
 frame.grid(row=0, column=0)
 
-# Frequncy
+# Frequency
 frequencyLabel = tk.Label(frame, text="Frequency (Hz):")
 frequencyLabel.grid(row=0, column=0)
 frequencySlider = tk.Scale(frame, variable=frequency,from_=100, to=1000, orient=tk.HORIZONTAL, command=updateLabels)
@@ -327,7 +352,7 @@ entryFrequency.insert(0, (str(frequencySlider.get())))
 # Duration
 durationLabel = tk.Label(frame, text="Duration:")
 durationLabel.grid(row=3, column=0)
-durationSlider = tk.Scale(frame, variable=duration, from_=0.1, to=10, orient=tk.HORIZONTAL, command=updateLabels, resolution=0.1)
+durationSlider = tk.Scale(frame, variable=duration, from_=0, to=10, orient=tk.HORIZONTAL, command=updateLabels, resolution=0.1)
 durationSlider.set(duration)
 durationSlider.grid(row=4, column=0)
 
@@ -354,7 +379,7 @@ entryAmplitude.insert(0, (str(amplitudeSlider.get())))
 # Attack
 attackLabel = tk.Label(frame, text="Attack:", state=tk.DISABLED)
 attackLabel.grid(row=9, column=0)
-attackSlider = tk.Scale(frame, variable=attack, from_=0.1, to=5, orient=tk.HORIZONTAL, command=updateLabels, resolution=0.1, state=tk.DISABLED)
+attackSlider = tk.Scale(frame, variable=attack, from_=0, to=5, orient=tk.HORIZONTAL, command=updateLabels, resolution=0.1)
 attackSlider.set(attack)
 attackSlider.grid(row=10, column=0)
 
@@ -367,7 +392,7 @@ entryAttack.insert(0, (str(attackSlider.get())))
 # Decay
 decayLabel = tk.Label(frame, text="Decay:", state=tk.DISABLED)
 decayLabel.grid(row=12, column=0)
-decaySlider = tk.Scale(frame, variable=decay, from_=0.1, to=5, orient=tk.HORIZONTAL, command=updateLabels, resolution=0.1, state=tk.DISABLED)
+decaySlider = tk.Scale(frame, variable=decay, from_=0, to=5, orient=tk.HORIZONTAL, command=updateLabels, resolution=0.1)
 decaySlider.set(decay)
 decaySlider.grid(row=13, column=0)
 
@@ -380,7 +405,7 @@ entryDecay.insert(0, (str(decaySlider.get())))
 # Sustain
 sustainLabel = tk.Label(frame, text="Sustain:", state=tk.DISABLED)
 sustainLabel.grid(row=15, column=0)
-sustainSlider = tk.Scale(frame, variable=sustain, from_=0.1, to=1, orient=tk.HORIZONTAL, command=updateLabels, resolution=0.1, state=tk.DISABLED)
+sustainSlider = tk.Scale(frame, variable=sustain, from_=0, to=1, orient=tk.HORIZONTAL, command=updateLabels, resolution=0.1)
 sustainSlider.set(sustain)
 sustainSlider.grid(row=16, column=0)
 
@@ -393,7 +418,7 @@ entrySustain.insert(0, (str(sustainSlider.get())))
 # Release
 releaseLabel = tk.Label(frame, text="Release:", state=tk.DISABLED)
 releaseLabel.grid(row=18, column=0)
-releaseSlider = tk.Scale(frame, variable=release, from_=0.1, to=5, orient=tk.HORIZONTAL, command=updateLabels, resolution=0.1, state=tk.DISABLED)
+releaseSlider = tk.Scale(frame, variable=release, from_=0, to=5, orient=tk.HORIZONTAL, command=updateLabels, resolution=0.1)
 releaseSlider.set(release)
 releaseSlider.grid(row=19, column=0)
 
@@ -403,19 +428,33 @@ entryRelease = tk.Entry(frame, state=tk.DISABLED, textvariable=svRelease)
 entryRelease.grid(row=20, column=0)
 entryRelease.insert(0, (str(releaseSlider.get())))
 
+#Frequency Slide
+slideLabel = tk.Label(frame, text="Frequency Slide")
+slideLabel.grid(row=21, column=0)
+slideSlider = tk.Scale(frame, variable=slide,from_=0.1, to=5, orient=tk.HORIZONTAL, command=updateLabels, resolution=0.1)
+slideSlider.set(slide)
+slideSlider.grid(row=22, column=0)
+
+svSlide = tk.StringVar()
+svSlide.trace_add('write', updateSlide)
+
+entrySlide = tk.Entry(frame, textvariable=svSlide)
+entrySlide.grid(row=23, column=0)
+entrySlide.insert(0, (str(slideSlider.get())))
+
 ASDRbutton = Checkbutton(frame, text="Enable ASDR",variable = ADSR_enabled, 
                     onvalue = 1, 
                     offvalue = 0,
                     command=ADRSSwitch)
-ASDRbutton.grid(row=21, column=0)
+ASDRbutton.grid(row=24, column=0)
 chordButton = Checkbutton(frame, text="Enable chord",variable = chord_enabled, 
                     onvalue = 1, 
                     offvalue = 0)
-chordButton.grid(row=22, column=0)
+chordButton.grid(row=25, column=0)
 EightBitbutton = Checkbutton(frame, text="Enable 8-bit",variable = EightBit_enabled, 
                     onvalue = 1, 
                     offvalue = 0)
-EightBitbutton.grid(row=23, column=0)
+EightBitbutton.grid(row=26, column=0)
 
 
 entry_btn = tk.Button(frame, text="Play", command=on_click)
@@ -445,7 +484,7 @@ sustainExplantionLabel.grid(row=7, column=1)
 releaseExplantionLabel = tk.Label(frame, text="Release is how long it takes for the sound to fade out after releasing a key. Enable ASDR to use this feature.")
 releaseExplantionLabel.grid(row=8, column=1)
 
-ADRSExplanationLabel = tk.Label(frame, text="ADSR stands for Attack, Decay, Sustain, Release.")
+ADRSExplanationLabel = tk.Label(frame, text="ADSR stands for Attack, Decay, Sustain, Release.If total of Attack, Decay and Release is longer than the duration,\nthe duration will be set to the total of Attack, Decay and Release + 0.1 seconds.")
 ADRSExplanationLabel.grid(row=9, column=1)
 
 chordExplanationLabel = tk.Label(frame, text="Enabling chord will play the several notes at the same time.")
@@ -454,8 +493,11 @@ chordExplanationLabel.grid(row=10, column=1)
 eightBitExplanationLabel = tk.Label(frame, text="Enabling 8-bit will make the sound more 8-bit by lowering the rate data changes.")
 eightBitExplanationLabel.grid(row=11, column=1)
 
+slideExplanationLabel = tk.Label(frame, text="Frequency slide changes the pitch over time. Lower values makes the pitch go lower, higher value makes the pitch go higher.\nAmount of change controls the speed the pitch changes at. Affects the length of the sound")
+slideExplanationLabel.grid(row=12, column=1)
+
 exportbtn = tk.Button(frame, text="Export", command=exportSound)
-exportbtn.grid(row=12, column=1)
+exportbtn.grid(row=13, column=1)
 
 updateSliders("", "", "")
 updateLabels("")
