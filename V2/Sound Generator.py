@@ -7,7 +7,61 @@ import numpy as np
 import sounddevice as sd
 import tkinter as tk
 import sys
+import wave 
 
+def getSoundValues():
+    textFreq = entryFrequency.get()
+    if checkIfNum(textFreq):
+        frequency = float(textFreq)
+    else:
+        frequency = 440
+
+    textDur = entryDuration.get()
+    if checkIfNum(textDur):
+        duration = float(textDur)
+    else:
+        duration = 1.0
+
+    textamp = entryAmplitude.get()
+    if checkIfNum(textamp):
+        amplitude = float(textamp)
+    else:
+        amplitude = 0.01
+    if ADSR_enabled.get() == 1:
+        textAttack = entryAttack.get()
+        if checkIfNum(textAttack):
+            attack = float(textAttack)
+        else:
+            attack = 1
+        textDecay = entryDecay.get()
+        if checkIfNum(textDecay):
+            decay = float(textDecay)
+        else:
+            decay = 0.1
+        textSustain = entrySustain.get()
+        if checkIfNum(textSustain):
+            sustain = float(textSustain)
+        else:
+            sustain = 0.5
+        textRelease = entryRelease.get()
+        if checkIfNum(textRelease):
+            release = float(textRelease)
+        else:
+            release = 0.2
+        if duration < (attack + decay + release):
+            duration = attack + decay + release + 0.1
+        
+    sines = [sine_tone(frequency = 200 * i, amplitude=0.3 /i) for i in range(1, 31, 2)]
+    sinesBeating = [sine_tone(200, 2, 0.01), sine_tone(205, 2, 0.01)]
+
+    sine1 = sine_tone(frequency, duration, amplitude/1000, sample_rate=sampleRate)
+    sine2 = sine_tone(frequency*2, duration, amplitude/2000, sample_rate=sampleRate)
+    sine3 = sine_tone(frequency*4, duration, amplitude/3000, sample_rate=sampleRate)
+
+    mysound = sine1 if chord_enabled.get() == 0 else sum([sine1, sine2, sine3])
+    if(ADSR_enabled.get()==1):
+        mysound = apply_envelope(mysound, [attack, decay, sustain, release], smaple_rate=sampleRate)
+    return mysound
 
 def on_click():
     textFreq = entryFrequency.get()
@@ -64,9 +118,11 @@ def on_click():
     # mysound3 = sum(sines)
     # mysound4 = sum(sinesBeating)
     # mysound2 = sine_tone(400, 1, 0.01)
-    sd.play(mysound)
+    sd.play(mysound, samplerate=sampleRate)
     sd.wait()
-    print(sys.getsizeof(mysound))
+    #print(sys.getsizeof(mysound))
+
+#region Sound Generation Functions
 
 def white_noise(
         duration: float =1.0,
@@ -119,13 +175,15 @@ def apply_envelope(sound: np.array,
     sound[attack_samples + decay_samples + sustain_samples:] *= np.linspace(adsr[2], 0, release_samples)
     return sound
 
+#endregion
 def checkIfNum(str):
     try:
         float(str)
         return True
     except ValueError:
         return False
-    
+#region GUI Helper func
+
 def ADRSSwitch():
     if ADSR_enabled.get() == 1:
         attackLabel.config(state=tk.NORMAL)
@@ -185,20 +243,14 @@ def updateRelease(var, index, mode):
         releaseSlider.set(float(entryRelease.get()))
 
 def updateSliders(var, index, mode):
-    if checkIfNum(entryFrequency.get()):
-        frequencySlider.set(float(entryFrequency.get()))
-    if checkIfNum(entryDuration.get()):
-        durationSlider.set(float(entryDuration.get()))
-    if checkIfNum(entryAmplitude.get()):
-        amplitudeSlider.set(float(entryAmplitude.get()))
-    if checkIfNum(entryAttack.get()):
-        attackSlider.set(float(entryAttack.get()))
-    if checkIfNum(entryDecay.get()):
-        decaySlider.set(float(entryDecay.get()))
-    if checkIfNum(entrySustain.get()):
-        sustainSlider.set(float(entrySustain.get()))
-    if checkIfNum(entryRelease.get()):
-        releaseSlider.set(float(entryRelease.get()))
+    updateFrequency("", "", "")
+    updateDuration("", "", "")
+    updateAmplitude("", "", "")
+    updateAttack("", "", "")
+    updateDecay("", "", "")
+    updateSustain("", "", "")
+    updateRelease("", "", "")
+    
 
 def updateLabels(var):
     entryFrequency.delete(0, tk.END)
@@ -223,9 +275,25 @@ def updateLabels(var):
     entryRelease.insert(0, (str(releaseSlider.get())))
     updateSliders("", "", "")
 
+def exportSound():
+
+    with wave.open('output.wav', 'w') as f:
+        f.setnchannels(2)
+        f.setsampwidth(2)
+        f.setframerate(sampleRate/2)
+        sound = getSoundValues()
+
+        sound = np.int16(sound * 32767)
+
+        f.writeframes(sound.tobytes())
+        print(sampleRate)
+#endregion
+
+#region main
+
 frequency = 440.0
 duration = 1.0
-amplitude = 1
+amplitude = 5
 attack = 1
 decay = 0.1
 sustain = 0.5
@@ -242,9 +310,11 @@ root.title("Sound Generator")
 frame = tk.Frame(root)
 frame.grid(row=0, column=0)
 
+# Frequncy
 frequencyLabel = tk.Label(frame, text="Frequency (Hz):")
 frequencyLabel.grid(row=0, column=0)
 frequencySlider = tk.Scale(frame, variable=frequency,from_=100, to=1000, orient=tk.HORIZONTAL, command=updateLabels)
+frequencySlider.set(frequency)
 frequencySlider.grid(row=1, column=0)
 
 svF = tk.StringVar()
@@ -254,9 +324,11 @@ entryFrequency = tk.Entry(frame, textvariable=svF)
 entryFrequency.grid(row=2, column=0)
 entryFrequency.insert(0, (str(frequencySlider.get())))
 
+# Duration
 durationLabel = tk.Label(frame, text="Duration:")
 durationLabel.grid(row=3, column=0)
-durationSlider = tk.Scale(frame, variable=duration, from_=0.1, to=10, orient=tk.HORIZONTAL, command=updateLabels, resolution=0.1, showvalue=5)
+durationSlider = tk.Scale(frame, variable=duration, from_=0.1, to=10, orient=tk.HORIZONTAL, command=updateLabels, resolution=0.1)
+durationSlider.set(duration)
 durationSlider.grid(row=4, column=0)
 
 svD = tk.StringVar()
@@ -266,9 +338,11 @@ entryDuration = tk.Entry(frame, textvariable=svD)
 entryDuration.grid(row=5, column=0)
 entryDuration.insert(0, (str(durationSlider.get())))
 
+# Amplitude
 amplitudeLabel = tk.Label(frame, text="Amplitude:")
 amplitudeLabel.grid(row=6, column=0)
 amplitudeSlider = tk.Scale(frame, variable=amplitude, from_=1, to=100, orient=tk.HORIZONTAL, command=updateLabels)
+amplitudeSlider.set(amplitude)
 amplitudeSlider.grid(row=7, column=0)
 
 svAmp = tk.StringVar()
@@ -277,9 +351,11 @@ entryAmplitude = tk.Entry(frame, textvariable=svAmp)
 entryAmplitude.grid(row=8, column=0)
 entryAmplitude.insert(0, (str(amplitudeSlider.get())))
 
+# Attack
 attackLabel = tk.Label(frame, text="Attack:", state=tk.DISABLED)
 attackLabel.grid(row=9, column=0)
 attackSlider = tk.Scale(frame, variable=attack, from_=0.1, to=5, orient=tk.HORIZONTAL, command=updateLabels, resolution=0.1, state=tk.DISABLED)
+attackSlider.set(attack)
 attackSlider.grid(row=10, column=0)
 
 svA = tk.StringVar()
@@ -288,9 +364,11 @@ entryAttack = tk.Entry(frame, state=tk.DISABLED, textvariable=svA)
 entryAttack.grid(row=11, column=0)
 entryAttack.insert(0, (str(attackSlider.get())))
 
+# Decay
 decayLabel = tk.Label(frame, text="Decay:", state=tk.DISABLED)
 decayLabel.grid(row=12, column=0)
 decaySlider = tk.Scale(frame, variable=decay, from_=0.1, to=5, orient=tk.HORIZONTAL, command=updateLabels, resolution=0.1, state=tk.DISABLED)
+decaySlider.set(decay)
 decaySlider.grid(row=13, column=0)
 
 svDecay = tk.StringVar()
@@ -299,9 +377,11 @@ entryDecay = tk.Entry(frame, state=tk.DISABLED, textvariable=svDecay)
 entryDecay.grid(row=14, column=0)
 entryDecay.insert(0, (str(decaySlider.get())))
 
+# Sustain
 sustainLabel = tk.Label(frame, text="Sustain:", state=tk.DISABLED)
 sustainLabel.grid(row=15, column=0)
 sustainSlider = tk.Scale(frame, variable=sustain, from_=0.1, to=1, orient=tk.HORIZONTAL, command=updateLabels, resolution=0.1, state=tk.DISABLED)
+sustainSlider.set(sustain)
 sustainSlider.grid(row=16, column=0)
 
 svSustain = tk.StringVar()
@@ -310,9 +390,11 @@ entrySustain = tk.Entry(frame, state=tk.DISABLED, textvariable=svSustain)
 entrySustain.grid(row=17, column=0)
 entrySustain.insert(0, (str(sustainSlider.get())))
 
+# Release
 releaseLabel = tk.Label(frame, text="Release:", state=tk.DISABLED)
 releaseLabel.grid(row=18, column=0)
 releaseSlider = tk.Scale(frame, variable=release, from_=0.1, to=5, orient=tk.HORIZONTAL, command=updateLabels, resolution=0.1, state=tk.DISABLED)
+releaseSlider.set(release)
 releaseSlider.grid(row=19, column=0)
 
 svRelease = tk.StringVar()
@@ -372,7 +454,11 @@ chordExplanationLabel.grid(row=10, column=1)
 eightBitExplanationLabel = tk.Label(frame, text="Enabling 8-bit will make the sound more 8-bit by lowering the rate data changes.")
 eightBitExplanationLabel.grid(row=11, column=1)
 
+exportbtn = tk.Button(frame, text="Export", command=exportSound)
+exportbtn.grid(row=12, column=1)
+
 updateSliders("", "", "")
 updateLabels("")
 
 root.mainloop()
+#endregion
