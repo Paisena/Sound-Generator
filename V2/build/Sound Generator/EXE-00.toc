@@ -89,7 +89,7 @@
  [],
  False,
  False,
- 1769934085,
+ 1770946883,
  [('run.exe',
    'C:\\SchoolStuff\\UCSC\\UCSC Year 3 WINTER\\CMPM '
    '147\\Sound-Generator\\.venv\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\run.exe',
