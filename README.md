@@ -20,7 +20,7 @@ Attack: How long it takes for the sound to reach full volume. Enable ASDR to use
 
 Decay: How long it takes for the sound to fall from full volume to sustain volume. Enable ASDR to use this feature.
 
-Sustain: The volume level that the sound maintains while playing. Enable ASDR to use this feature.
+Sustain: The volume level that the sound maintains after the decay portion. Enable ASDR to use this feature.
 
 Release: How long it takes for the sound to fade out after releasing a key. Enable ASDR to use this feature.
 
