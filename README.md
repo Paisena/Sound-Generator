@@ -7,7 +7,7 @@ for the tool.
 
 You can create the wave file by pressing the "Export" button, which creates a .wav file called "output.wav" in the directory of the .exe file.
 
-Parameters:
+Parameters:\n
 Frequency: Changes the pitch of the sound. Higher values are higher pitches and lower values are lower pitches.
 Duration: How long the sound plays.
 Amplitude: The volume of the sound. A higher amplitude is louder.
