@@ -5,6 +5,8 @@ How to access the tool:
 You can either clone the repo or download it as a zip. Then you go to the file named "Sound Generator(Exe Found Here)" and inside is a .exe file named "Sound Generator.exe". That is the executable 
 for the tool.
 
+Play the sound by pressing the "Play" button.
+
 You can create the wave file by pressing the "Export" button, which creates a .wav file called "output.wav" in the directory of the .exe file.
 
 
