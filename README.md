@@ -7,6 +7,7 @@ for the tool.
 
 You can create the wave file by pressing the "Export" button, which creates a .wav file called "output.wav" in the directory of the .exe file.
 
+
 Parameters:
 
 Frequency: Changes the pitch of the sound. Higher values are higher pitches and lower values are lower pitches.
@@ -29,3 +30,10 @@ Decay, and Release + 0.1 seconds.
 Enable Choord: Enabling chord will play several notes at the same time.
 
 Enable 8-Bit: Enabling 8-bit will make the sound more 8-bit.
+
+Frequency Slide: Changes the pitch over time. Lower values makes the pitch go lower, higher value makes the pitch go higher.\nAmount of change controls the speed the pitch changes at. Affects the length of the sound
+
+
+Known Limitations:
+
+Cannot create sounds that have multiple frequency slides. Frequency slides with 8-bit enabled lead to being very harsh to the ears. Can only generate one type of chord, no chord customizability.
