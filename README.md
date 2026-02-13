@@ -24,14 +24,14 @@ Sustain: The volume level that the sound maintains after the decay portion. Enab
 
 Release: How long it takes for the sound to fade out after releasing a key. Enable ASDR to use this feature.
 
-Enable ADRS: ADSR stands for Attack, Decay, Sustain, Release. If the total of Attack, Decay and Release is longer than the duration,\nthe duration will be set to the total of Attack, 
+Enable ADRS: ADSR stands for Attack, Decay, Sustain, Release. If the total of Attack, Decay and Release is longer than the duration, the duration will be set to the total of Attack, 
 Decay, and Release + 0.1 seconds.
 
 Enable Choord: Enabling chord will play several notes at the same time.
 
 Enable 8-Bit: Enabling 8-bit will make the sound more 8-bit.
 
-Frequency Slide: Changes the pitch over time. Lower values makes the pitch go lower, higher value makes the pitch go higher.\nAmount of change controls the speed the pitch changes at. Affects the length of the sound
+Frequency Slide: Changes the pitch(Frequency) over time. Lower values makes the pitch go lower, higher value makes the pitch go higher.The amount of change controls the speed at which  the pitch changes. Affects the length of the sound
 
 
 Known Limitations:
