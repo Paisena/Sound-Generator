@@ -157,7 +157,6 @@ def sine_tone(
     n_samples = int(duration * sample_rate)
 
     time_points = np.linspace(0, duration, n_samples, False)
-    print(slide)
     sine = np.sin(2 * np.pi * frequency * pow(time_points,slide))
 
     sine *= amplitude
@@ -310,7 +309,6 @@ def exportSound():
         sound = np.int16(sound * 32767)
 
         f.writeframes(sound.tobytes())
-        print(sampleRate)
 #endregion
 
 #region main
@@ -442,11 +440,11 @@ entrySlide = tk.Entry(frame, textvariable=svSlide)
 entrySlide.grid(row=23, column=0)
 entrySlide.insert(0, (str(slideSlider.get())))
 
-ASDRbutton = Checkbutton(frame, text="Enable ASDR",variable = ADSR_enabled, 
+ADSRbutton = Checkbutton(frame, text="Enable ADSR",variable = ADSR_enabled, 
                     onvalue = 1, 
                     offvalue = 0,
                     command=ADRSSwitch)
-ASDRbutton.grid(row=24, column=0)
+ADSRbutton.grid(row=24, column=0)
 chordButton = Checkbutton(frame, text="Enable chord",variable = chord_enabled, 
                     onvalue = 1, 
                     offvalue = 0)
@@ -472,22 +470,22 @@ durationExplantionLabel.grid(row=3, column=1)
 amplitudeExplantionLabel = tk.Label(frame, text="Amplitude is the volume of the sound. Higher amplitude is louder.")
 amplitudeExplantionLabel.grid(row=4, column=1)
 
-AttackExplantionLabel = tk.Label(frame, text="Attack is how long it takes for the sound to reach full volume. Enable ASDR to use this feature.")
+AttackExplantionLabel = tk.Label(frame, text="Attack is how long it takes for the sound to reach full volume. Enable ADSR to use this feature.")
 AttackExplantionLabel.grid(row=5, column=1)
 
-decayExplantionLabel = tk.Label(frame, text="Decay is how long it takes for the sound to fall from full volume to sustain volume. Enable ASDR to use this feature.")
+decayExplantionLabel = tk.Label(frame, text="Decay is how long it takes for the sound to fall from full volume to sustain volume. Enable ADSR to use this feature.")
 decayExplantionLabel.grid(row=6, column=1)
 
-sustainExplantionLabel = tk.Label(frame, text="Sustain is the volume level that the sound maintains while playing. Enable ASDR to use this feature.")
+sustainExplantionLabel = tk.Label(frame, text="Sustain is the volume level that the sound maintains while playing. Enable ADSR to use this feature.")
 sustainExplantionLabel.grid(row=7, column=1)
 
-releaseExplantionLabel = tk.Label(frame, text="Release is how long it takes for the sound to fade out after releasing a key. Enable ASDR to use this feature.")
+releaseExplantionLabel = tk.Label(frame, text="Release is how long it takes for the sound to fade out after releasing a key. Enable ADSR to use this feature.")
 releaseExplantionLabel.grid(row=8, column=1)
 
 ADRSExplanationLabel = tk.Label(frame, text="ADSR stands for Attack, Decay, Sustain, Release.If total of Attack, Decay and Release is longer than the duration,\nthe duration will be set to the total of Attack, Decay and Release + 0.1 seconds.")
 ADRSExplanationLabel.grid(row=9, column=1)
 
-chordExplanationLabel = tk.Label(frame, text="Enabling chord will play the several notes at the same time.")
+chordExplanationLabel = tk.Label(frame, text="Enabling chord will play several notes at the same time.")
 chordExplanationLabel.grid(row=10, column=1)
 
 eightBitExplanationLabel = tk.Label(frame, text="Enabling 8-bit will make the sound more 8-bit by lowering the rate data changes.")
