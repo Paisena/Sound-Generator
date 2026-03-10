@@ -52,16 +52,16 @@ def getSoundValues():
             duration = attack + decay + release + 0.1
         textSlide = entrySlide.get()
         if checkIfNum(textSlide):
-            slide = float(textSlide)
+            slideVal = float(textSlide)
         else:
-            slide = 1
+            slideVal = 1
         
     sines = [sine_tone(frequency = 200 * i, amplitude=0.3 /i) for i in range(1, 31, 2)]
     sinesBeating = [sine_tone(200, 2, 0.01), sine_tone(205, 2, 0.01)]
 
-    sine1 = sine_tone(frequency, duration, amplitude/1000, sample_rate=sampleRate)
-    sine2 = sine_tone(frequency*2, duration, amplitude/2000, sample_rate=sampleRate)
-    sine3 = sine_tone(frequency*4, duration, amplitude/3000, sample_rate=sampleRate)
+    sine1 = sine_tone(frequency, duration, amplitude/1000, sample_rate=sampleRate, slide=slideVal)
+    sine2 = sine_tone(frequency*2, duration, amplitude/2000, sample_rate=sampleRate, slide=slideVal)
+    sine3 = sine_tone(frequency*4, duration, amplitude/3000, sample_rate=sampleRate, slide=slideVal)
 
     mysound = sine1 if chord_enabled.get() == 0 else sum([sine1, sine2, sine3])
     if(ADSR_enabled.get()==1):
